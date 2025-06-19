@@ -1,4 +1,4 @@
-const wrapResolver =
+const wrapMutationResolver =
   (resolverFunction, successMessage = "Operation successful") =>
   async (_, args) => {
     try {
@@ -18,4 +18,16 @@ const wrapResolver =
     }
   };
 
-module.exports = { wrapResolver };
+const wrapQueryResolver = (resolverFunction) => async (_, args) => {
+  try {
+    const result = await resolverFunction(args);
+    return result;
+  } catch (error) {
+    console.error("Query Resolver Error:", error);
+    throw new Error(
+      error.message || "An unexpected error occurred during query."
+    );
+  }
+};
+
+module.exports = { wrapMutationResolver, wrapQueryResolver };
