@@ -1,7 +1,7 @@
 const { GraphQLObjectType, GraphQLBoolean, GraphQLString } = require("graphql");
 const { default: GraphQLJSON } = require("graphql-type-json");
 
-const GenericResponseType = new GraphQLObjectType({
+const ResponseHandler = new GraphQLObjectType({
   name: "ResponseHandler",
   fields: () => ({
     success: { type: GraphQLBoolean },
@@ -10,4 +10,4 @@ const GenericResponseType = new GraphQLObjectType({
   }),
 });
 
-module.exports = GenericResponseType;
+module.exports = ResponseHandler;

@@ -28,7 +28,7 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
       },
       duration: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       level: {

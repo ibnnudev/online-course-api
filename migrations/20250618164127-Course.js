@@ -36,6 +36,10 @@ module.exports = {
           type: Sequelize.STRING,
           allowNull: false,
         },
+        imageUrl: {
+          type: Sequelize.STRING,
+          allowNull: true,
+        },
         published: {
           type: Sequelize.BOOLEAN,
           defaultValue: false,

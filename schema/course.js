@@ -4,22 +4,78 @@ const {
   GraphQLFloat,
   GraphQLBoolean,
   GraphQLList,
+  GraphQLInt,
+  GraphQLInputObjectType,
 } = require("graphql");
 const db = require("../models");
 const CourseType = require("./types/course");
 const ResponseHandler = require("./types/response-handler");
+const CourseLevelEnum = require("./enums/course-level");
 
 const courseMutations = {
+  createCoursesAtOnce: {
+    type: ResponseHandler,
+    args: {
+      courses: {
+        type: new GraphQLList(
+          new GraphQLInputObjectType({
+            name: "CourseInput",
+            fields: {
+              title: { type: GraphQLString },
+              description: { type: GraphQLString },
+              price: { type: GraphQLFloat },
+              duration: { type: GraphQLInt },
+              level: { type: CourseLevelEnum },
+              imageUrl: { type: GraphQLString },
+              published: { type: GraphQLBoolean },
+            },
+          })
+        ),
+      },
+    },
+    resolve: async (_, { courses }) => {
+      try {
+        const createdCourses = [];
+        for (const courseData of courses) {
+          const existing = await db.Course.findOne({
+            where: { title: courseData.title },
+          });
+          if (existing) {
+            throw new Error(
+              `Course with title "${courseData.title}" already exists`
+            );
+          }
+          const slug = courseData.title
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
+          const course = await db.Course.create({
+            ...courseData,
+            slug,
+          });
+          createdCourses.push(course);
+        }
+        return {
+          success: true,
+          message: "Courses created successfully",
+          data: createdCourses,
+        };
+      } catch (error) {
+        throw new Error("Error creating courses: " + error.message);
+      }
+    },
+  },
+
   createCourse: {
     type: ResponseHandler,
     args: {
       title: { type: GraphQLString },
       description: { type: GraphQLString },
       price: { type: GraphQLFloat },
-      duration: { type: GraphQLString },
-      level: { type: GraphQLString },
+      duration: { type: GraphQLInt },
+      level: { type: CourseLevelEnum },
       imageUrl: { type: GraphQLString },
-      published: { type: GraphQLString },
+      published: { type: GraphQLBoolean },
     },
     resolve: async (_, args) => {
       try {
@@ -35,9 +91,13 @@ const courseMutations = {
         const course = await db.Course.create({
           ...args,
           slug,
-          createdBy: args.createdBy || null,
         });
-        return course;
+        if (!course) throw new Error("Course creation failed");
+        return {
+          success: true,
+          message: "Course created successfully",
+          data: course,
+        };
       } catch (error) {
         throw new Error("Error creating course: " + error.message);
       }
@@ -52,8 +112,8 @@ const courseMutations = {
       description: { type: GraphQLString },
       price: { type: GraphQLFloat },
       slug: { type: GraphQLString },
-      duration: { type: GraphQLString },
-      level: { type: GraphQLString },
+      duration: { type: GraphQLInt },
+      level: { type: CourseLevelEnum },
       imageUrl: { type: GraphQLString },
       published: { type: GraphQLBoolean },
       createdBy: { type: GraphQLID },
