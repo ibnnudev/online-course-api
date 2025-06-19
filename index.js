@@ -15,9 +15,7 @@ const formatError = (error) => {
 async function startServer() {
   try {
     await db.sequelize.authenticate();
-    await db.sequelize.sync({
-      alter: true,
-    });
+    await db.sequelize.sync({ force: false });
 
     const server = new ApolloServer({
       schema,

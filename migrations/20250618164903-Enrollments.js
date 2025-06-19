@@ -6,7 +6,6 @@ module.exports = {
     await queryInterface.createTable(
       "enrollments",
       {
-        // id, userId, courseId, enrollmentDate, status: `pending (default) | active | completed | cancelled`
         id: {
           type: Sequelize.UUID,
           defaultValue: Sequelize.UUIDV4,
@@ -17,7 +16,7 @@ module.exports = {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
-            model: "users", // Assuming the users table is already created
+            model: "users",
             key: "id",
           },
         },
@@ -25,7 +24,7 @@ module.exports = {
           type: Sequelize.UUID,
           allowNull: false,
           references: {
-            model: "courses", // Assuming the courses table is already created
+            model: "courses",
             key: "id",
           },
         },

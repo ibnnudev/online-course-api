@@ -13,11 +13,9 @@ const courseMutations = {
   createCourse: {
     type: ResponseHandler,
     args: {
-      id: { type: GraphQLID },
       title: { type: GraphQLString },
       description: { type: GraphQLString },
       price: { type: GraphQLFloat },
-      slug: { type: GraphQLString },
       duration: { type: GraphQLString },
       level: { type: GraphQLString },
       imageUrl: { type: GraphQLString },
@@ -26,11 +24,19 @@ const courseMutations = {
     resolve: async (_, args) => {
       try {
         const existing = await db.Course.findOne({
-          where: { title: args.title, slug: args.slug },
+          where: { title: args.title },
         });
         if (existing)
           throw new Error("Course with this title or slug already exists");
-        const course = await db.Course.create(args);
+        const slug = args.title
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-|-$/g, "");
+        const course = await db.Course.create({
+          ...args,
+          slug,
+          createdBy: args.createdBy || null,
+        });
         return course;
       } catch (error) {
         throw new Error("Error creating course: " + error.message);

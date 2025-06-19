@@ -37,7 +37,6 @@ module.exports = {
         transactionId: {
           type: Sequelize.STRING,
           allowNull: false,
-          unique: true,
         },
         status: {
           type: Sequelize.ENUM("pending", "completed", "failed"),
