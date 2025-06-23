@@ -9,8 +9,7 @@ const UserType = new GraphQLObjectType({
     email: { type: GraphQLString },
     password: { type: GraphQLString },
     role: { type: UserRoleEnum },
-    firstName: { type: GraphQLString },
-    lastName: { type: GraphQLString },
+    fullName: { type: GraphQLString },
     createdAt: {
       type: GraphQLString,
       resolve: (user) => {

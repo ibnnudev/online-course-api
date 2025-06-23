@@ -1,33 +1,32 @@
-const wrapMutationResolver =
-  (resolverFunction, successMessage = "Operation successful") =>
-  async (_, args) => {
+const wrapQueryResolver =
+  (resolver, successMessage = null) =>
+  async (parent, args, context, info) => {
     try {
-      const result = await resolverFunction(args);
-      return {
-        success: true,
-        message: successMessage,
-        data: Array.isArray(result) ? result : result ? [result] : [],
-      };
+      const data = await resolver(parent, args, context, info);
+      return successMessage ? { message: successMessage, data } : data;
     } catch (error) {
-      console.error("Resolver Error:", error);
-      return {
-        success: false,
-        message: error.message || "An unexpected error occurred.",
-        data: [],
-      };
+      throw new Error(error.message);
     }
   };
 
-const wrapQueryResolver = (resolverFunction) => async (_, args) => {
-  try {
-    const result = await resolverFunction(args);
-    return result;
-  } catch (error) {
-    console.error("Query Resolver Error:", error);
-    throw new Error(
-      error.message || "An unexpected error occurred during query."
-    );
-  }
-};
+const wrapMutationResolver =
+  (resolver, successMessage = null) =>
+  async (parent, args, context, info) => {
+    try {
+      const data = await resolver(parent, args, context, info);
+      return successMessage
+        ? {
+            success: true,
+            message: successMessage,
+            data,
+          }
+        : data;
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
-module.exports = { wrapMutationResolver, wrapQueryResolver };
+module.exports = {
+  wrapQueryResolver,
+  wrapMutationResolver,
+};

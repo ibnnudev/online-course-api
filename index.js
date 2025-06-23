@@ -26,7 +26,7 @@ async function startServer() {
     });
 
     server.listen().then(({ url }) => {
-      console.log(`🚀 Server ready at ${url}`);
+      console.log(`🚀 Server ready at ${url}/graphql`);
     });
   } catch (error) {
     console.error("❌ Unable to connect to the database:", error.message);
