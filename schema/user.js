@@ -1,19 +1,15 @@
-const {
-  GraphQLList,
-  GraphQLString,
-  GraphQLID,
-  GraphQLInt,
-} = require("graphql");
+const {GraphQLString, GraphQLID, GraphQLInt} = require("graphql");
 
 const UserType = require("../types/user");
 const UserRoleEnum = require("../enums/user-role");
 const ResponseHandler = require("../types/response-handler");
 const UserPaginationType = require("../utils/pagination");
 const { wrapMutationResolver, wrapQueryResolver } = require("../utils/wrapper");
-const { hashPassword } = require("../utils/bcrypt");
+const {hashPassword, comparePassword} = require("../utils/bcrypt");
 const paginate = require("../helper/paginate");
 
 const db = require("../models");
+const generateToken = require('../helper/generate-token');
 
 const UserFields = {
   username: { type: GraphQLString },
@@ -123,6 +119,37 @@ const userMutations = {
       return null;
     }, "User deleted successfully"),
   },
+
+  login: {
+    type: ResponseHandler,
+    args: {
+      username: {type: GraphQLString},
+      password: {type: GraphQLString}
+      ,
+    },
+    resolve: wrapMutationResolver(async (_, args) => {
+      const user = await db.User.findOne({
+        where: {
+          username: args.username,
+        }
+      });
+      if (!user) throw new Error("User not found");
+      const isPasswordValid = await comparePassword(args.password, user.password)
+      if (!isPasswordValid) throw new Error("Invalid password");
+
+      const token = generateToken(user);
+      const userData = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        fullName: user.fullName,
+        token: token,
+      }
+
+      return userData;
+    }, "Login successful"),
+  }
 };
 
 module.exports = {
