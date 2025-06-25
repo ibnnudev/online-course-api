@@ -1,12 +1,9 @@
-const { GraphQLEnumType } = require("graphql");
+const {GraphQLEnumType} = require("graphql");
+const courseLevel = require('../constants/course-level')
 
 const CourseLevelEnum = new GraphQLEnumType({
-  name: "CourseLevel",
-  values: {
-    BEGINNER: { value: "beginner" },
-    INTERMEDIATE: { value: "intermediate" },
-    ADVANCED: { value: "advanced" },
-  },
+    name: "CourseLevel",
+    values: courseLevel,
 });
 
 module.exports = CourseLevelEnum;

@@ -4,3 +4,5 @@ dist/
 # Logs
 logs
 npm-debug.log*
+# keys
+*.pem
