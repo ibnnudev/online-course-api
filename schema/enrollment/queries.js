@@ -7,9 +7,8 @@ const EnrollmentPaginationType = require("../../utils/pagination")("Enrollment",
 
 const roles = require("../../constants/roles");
 const middlewares = require("../../middlewares");
-const {GraphQLInt, GraphQLString} = require("graphql/type");
+const {GraphQLString} = require("graphql/type");
 const {paginationArgs} = require("../../constants/pagination");
-const {EnrollmentStatusEnum} = require("../../enums/enrollment-status");
 const isAdmin = require("../../middlewares/require-role")(roles.ADMIN);
 
 const enrollmentQueries = {
@@ -24,10 +23,18 @@ const enrollmentQueries = {
                     total: 1,
                 })
 
-                const {count: total, rows: enrollments} = await db.Enrollment.findAndCountAll({
-                    limit,
-                    offset
-                })
+                const {count: total, rows: enrollments} = await db.Enrollment.findAndCountAll(
+                    {
+                        limit,
+                        offset,
+                        include: [
+                            {
+                                model: db.Course,
+                                as: 'course',
+                                attributes: ['id', 'slug', 'title', 'description', 'price', 'duration', 'level']
+                            }
+                        ]
+                    })
 
                 return {
                     total,

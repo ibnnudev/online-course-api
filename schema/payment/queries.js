@@ -1,9 +1,9 @@
 const db = require("../../models");
-const PaymentType = require('./types')
+const {PaymentTypes} = require('./types')
 const ResponseHandler = require("../../utils/response-handler");
 const paginate = require("../../helper/paginate");
 const {wrapQueryResolver} = require("../../utils/wrapper");
-const PaymentPaginationType = require("../../utils/pagination")("Payment", PaymentType);
+const PaymentPaginationType = require("../../utils/pagination")("Payment", PaymentTypes);
 
 const roles = require("../../constants/roles");
 const middlewares = require("../../middlewares");

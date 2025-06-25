@@ -3,8 +3,8 @@ const {
     GraphQLInt,
     GraphQLString,
 } = require("graphql/type");
+
 const paymentStatusEnum = require("../../enums/payment-status");
-const generateTransactionId = require('../../helper/generate-transaction-id');
 
 const PaymentFields = {
     id: {type: GraphQLID},
@@ -16,7 +16,6 @@ const PaymentFields = {
     status: {type: paymentStatusEnum},
     paymentDate: {type: GraphQLString},
 
-    // DOKU VA ATTRIBUTES
     virtualAccountNo: {type: GraphQLString},
     howToPayUrl: {type: GraphQLString},
     customerName: {type: GraphQLString},

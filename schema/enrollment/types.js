@@ -1,5 +1,6 @@
 const {GraphQLObjectType, GraphQLString, GraphQLID} = require("graphql/type");
 const {EnrollmentStatusEnum} = require("../../enums/enrollment-status");
+const CourseType = require('../course/types');
 
 const EnrollmentType = new GraphQLObjectType({
     name: "Enrollment",
@@ -10,6 +11,24 @@ const EnrollmentType = new GraphQLObjectType({
         enrollmentDate: {
             type: GraphQLString,
             resolve: (enrollment) => enrollment.enrollmentDate.toISOString()
+        },
+        course: {
+            type: CourseType,
+            resolve: (enrollment) => {
+                if (!enrollment.course) {
+                    return null;
+                }
+
+                return {
+                    id: enrollment.course.id,
+                    title: enrollment.course.title,
+                    slug: enrollment.course.slug,
+                    description: enrollment.course.description,
+                    price: enrollment.course.price,
+                    duration: enrollment.course.duration,
+                    level: enrollment.course.level
+                };
+            }
         },
         status: {type: EnrollmentStatusEnum},
         createdAt: {
