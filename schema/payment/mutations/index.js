@@ -1,13 +1,13 @@
 const {v4: uuidv4} = require("uuid");
 require("dotenv").config();
 
-const db = require("../../models");
-const ResponseHandler = require("../../utils/response-handler");
-const {wrapMutationResolver} = require("../../utils/wrapper");
-const paymentStatus = require('../../constants/payment-status')
+const db = require("../../../models");
+const ResponseHandler = require("../../../utils/response-handler");
+const {wrapMutationResolver} = require("../../../utils/wrapper");
+const paymentStatus = require('../../../constants/payment-status')
 
-const roles = require("../../constants/roles");
-const middlewares = require("../../middlewares");
+const roles = require("../../../constants/roles");
+const middlewares = require("../../../middlewares");
 
 const dayjs = require("dayjs");
 
@@ -16,15 +16,15 @@ const {
     GraphQLString,
 } = require("graphql");
 
-const isAdmin = require("../../middlewares/require-role")(roles.ADMIN);
-const {buildCustomer, generateLineItems, STATIC_ADDRESS} = require("../../helper/payment");
-const {initiateDokuPayment} = require("../../services/payment");
+const isAdmin = require("../../../middlewares/require-role")(roles.ADMIN);
+const {buildCustomer, generateLineItems, STATIC_ADDRESS} = require("../../../helper/payment");
+const {initiateDokuPayment} = require("../../../services/payment");
 
-const PaymentFields = require("./fields");
-const {payment_method_types} = require("../../constants/payment-method");
-const {getExpiredDate} = require("../../helper/get-expired-date");
-const {getDokuAccessToken} = require("../../utils/doku-get-token");
-const {createSnapVA} = require("../../utils/doku-snap-va");
+const PaymentFields = require("../fields");
+const {payment_method_types} = require("../../../constants/payment-method");
+const {getExpiredDate} = require("../../../helper/get-expired-date");
+const {getDokuAccessToken} = require("../../../utils/doku-get-token");
+const {createSnapVA} = require("../../../utils/doku-snap-va");
 
 const paymentMutations = {
     createPayment: {

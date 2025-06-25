@@ -4,7 +4,7 @@ const {
     GraphQLString,
 } = require("graphql/type");
 
-const paymentStatusEnum = require("../../enums/payment-status");
+const paymentStatusEnum = require("../../../enums/payment-status")
 
 const PaymentFields = {
     id: {type: GraphQLID},

@@ -5,7 +5,7 @@ const {
     GraphQLFloat,
     GraphQLInt,
 } = require("graphql");
-const CourseLevelEnum = require("../../enums/course-level");
+const CourseLevelEnum = require("../../../enums/course-level");
 
 const CourseType = new GraphQLObjectType({
     name: "Course",

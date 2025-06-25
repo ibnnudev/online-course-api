@@ -1,5 +1,5 @@
 const {GraphQLString} = require("graphql");
-const UserRoleEnum = require("../../enums/user-role");
+const UserRoleEnum = require("../../../enums/user-role");
 
 const UserFields = {
     username: {type: GraphQLString},

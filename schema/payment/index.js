@@ -1,7 +1,8 @@
-const paymentQueries = require('./queries');
-const paymentMutations = require('./mutations')
-
 module.exports = {
-    paymentQueries,
-    paymentMutations
-}
+    ...require("./mutations/create"),
+    ...require("./mutations/update"),
+    ...require("./mutations/delete"),
+    ...require("./mutations/pay-va"),
+    ...require("./mutations/process"),
+    ...require("./mutations/complete"),
+};

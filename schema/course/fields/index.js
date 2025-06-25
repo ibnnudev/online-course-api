@@ -4,7 +4,7 @@ const {
     GraphQLInt,
     GraphQLBoolean
 } = require("graphql");
-const CourseLevelEnum = require('../../enums/course-level');
+const CourseLevelEnum = require('../../../enums/course-level');
 
 const CourseFields = {
     title: {type: GraphQLString},

@@ -1,5 +1,5 @@
 const {GraphQLID, GraphQLString} = require("graphql/type");
-const {EnrollmentStatusEnum} = require("../../enums/enrollment-status");
+const {EnrollmentStatusEnum} = require("../../../enums/enrollment-status");
 const EnrollmentFields = {
     id: {type: GraphQLID},
     userId: {type: GraphQLID},

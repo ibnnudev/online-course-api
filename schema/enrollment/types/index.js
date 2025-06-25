@@ -1,6 +1,6 @@
 const {GraphQLObjectType, GraphQLString, GraphQLID} = require("graphql/type");
-const {EnrollmentStatusEnum} = require("../../enums/enrollment-status");
-const CourseType = require('../course/types');
+const {EnrollmentStatusEnum} = require("../../../enums/enrollment-status");
+const CourseType = require('../../course/types');
 
 const EnrollmentType = new GraphQLObjectType({
     name: "Enrollment",

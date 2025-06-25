@@ -6,7 +6,7 @@ const {
     GraphQLInputObjectType
 } = require("graphql");
 
-const paymentStatusEnum = require("../../enums/payment-status");
+const paymentStatusEnum = require("../../../enums/payment-status");
 
 const createInput = (name, fields) => new GraphQLInputObjectType({name, fields});
 

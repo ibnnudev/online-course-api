@@ -1,15 +1,15 @@
-const db = require("../../models");
-const {PaymentTypes} = require('./types')
-const ResponseHandler = require("../../utils/response-handler");
-const paginate = require("../../helper/paginate");
-const {wrapQueryResolver} = require("../../utils/wrapper");
-const PaymentPaginationType = require("../../utils/pagination")("Payment", PaymentTypes);
+const db = require("../../../models");
+const {PaymentTypes} = require('../types')
+const ResponseHandler = require("../../../utils/response-handler");
+const paginate = require("../../../helper/paginate");
+const {wrapQueryResolver} = require("../../../utils/wrapper");
+const PaymentPaginationType = require("../../../utils/pagination")("Payment", PaymentTypes);
 
-const roles = require("../../constants/roles");
-const middlewares = require("../../middlewares");
+const roles = require("../../../constants/roles");
+const middlewares = require("../../../middlewares");
 const {GraphQLInt, GraphQLString} = require("graphql/type");
-const {paginationArgs} = require("../../constants/pagination");
-const isAdmin = require("../../middlewares/require-role")(roles.ADMIN);
+const {paginationArgs} = require("../../../constants/pagination");
+const isAdmin = require("../../../middlewares/require-role")(roles.ADMIN);
 
 const paymentQueries = {
     payments: {
