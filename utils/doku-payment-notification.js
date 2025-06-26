@@ -1,33 +1,27 @@
 const crypto = require("crypto");
 const axios = require("axios");
-const dayjs = require("dayjs");
 require("dotenv").config();
 
-const createSnapVA = async ({ accessToken, payload }) => {
+const paymentNotification = async ({ accessToken, channelId, payload }) => {
   const clientId = process.env.DOKU_CLIENT_ID;
   const secretKey = process.env.DOKU_SECRET_KEY;
-  const url = process.env.DOKU_SNAP_VA_URL;
+  const url = process.env.DOKU_PAYMENT_NOTIFICATION_URL;
 
-  const endpointUrl = "/virtual-accounts/bi-snap-va/v1.1/transfer-va/create-va";
+  console.log("Doku Payment Notification URL:", url);
+
+  const endpointUrl = "/v1/transfer-va/payment";
   const httpMethod = "POST";
-  const timestamp = dayjs().format("YYYY-MM-DDTHH:mm:ssZ");
-  console.log("timestamp", timestamp);
-  const externalId = payload.trxId || Date.now().toString();
+  const timestamp = new Date().toISOString(); // UTC timestamp
+  const externalId = `${payload.trxId}-${Date.now()}`; // Unik di hari yang sama
 
-  // === Step 1: Minify body ===
   const minifiedBody = JSON.stringify(payload);
-
-  // === Step 2: SHA256 hash of minified body ===
   const hashedBody = crypto
     .createHash("sha256")
     .update(minifiedBody)
     .digest("hex")
     .toLowerCase();
 
-  // === Step 3: Construct stringToSign ===
   const stringToSign = `${httpMethod}:${endpointUrl}:${accessToken}:${hashedBody}:${timestamp}`;
-
-  // === Step 4: HMAC SHA512 signature ===
   const signature = crypto
     .createHmac("sha512", secretKey)
     .update(stringToSign)
@@ -43,7 +37,9 @@ const createSnapVA = async ({ accessToken, payload }) => {
     Authorization: `Bearer ${accessToken}`,
   };
 
-  console.log("payload", payload);
+  console.log("Headers:", headers);
+  console.log("Payload:", payload);
+  console.log("URL:", url);
 
   try {
     const response = await axios.post(url, payload, { headers });
@@ -52,11 +48,15 @@ const createSnapVA = async ({ accessToken, payload }) => {
       data: response.data,
     };
   } catch (error) {
+    console.error(
+      "Payment notification error:",
+      error?.response.error || error.message
+    );
     return {
       success: false,
-      error: error.response?.data || error.message,
+      error: error?.response?.data || error.message,
     };
   }
 };
 
-module.exports = { createSnapVA };
+module.exports = { paymentNotification };

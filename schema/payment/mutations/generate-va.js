@@ -12,7 +12,7 @@ const {
 } = require("../../../constants/virtual-account-snap");
 
 module.exports = {
-  processPaymentWithVA: {
+  generateVA: {
     type: ResponseHandler,
     args: {
       enrollmentId: { type: GraphQLString },
@@ -49,6 +49,8 @@ module.exports = {
         },
         additionalInfo: {
           channel: VIRTUAL_ACCOUNT_BRI.channel,
+          // override_notification_url:
+          //   "https://0282a7660c4343.lhr.life/v1/transfer-va/payment",
         },
         virtualAccountTrxType: VIRTUAL_ACCOUNT_BRI.virtualAccountTrxType,
         expiredDate: dayjs().add(1, "day").format("YYYY-MM-DDTHH:mm:ssZ"),
@@ -59,19 +61,25 @@ module.exports = {
       const result = await createSnapVA({ accessToken: token.token, payload });
       if (!result.success) throw new Error("Failed to create Snap VA");
       const vaData = result.data.virtualAccountData;
-      return await db.Payment.create({
+      await db.Payment.create({
         enrollmentId,
         amount,
         currency: payload.totalAmount.currency,
+        partnerServiceId: vaData.partnerServiceId, // ✅ NEW
+        customerNo: vaData.customerNo, // ✅ NEW
+        virtualAccountTrxType: vaData.virtualAccountTrxType, // ✅ NEW
         paymentMethod: payload.additionalInfo.channel,
         transactionId: trxId,
-        virtualAccountNo: vaData.virtualAccountNo.trim(),
+        virtualAccountNo: vaData.virtualAccountNo,
         howToPayUrl: vaData.additionalInfo.howToPayPage,
+        howToPayApi: vaData.additionalInfo.howToPayApi, // ✅ NEW
         customerName: vaData.virtualAccountName,
         customerEmail: vaData.virtualAccountEmail,
         customerPhone: vaData.virtualAccountPhone,
-        expiredDate: dayjs(vaData.expiredDate, "YYYYMMDDHHmmss").toDate(),
+        expiredDate: dayjs(vaData.expiredDate, "YYYY-MM-DDTHH:mm:ssZ").toDate(), // Adjusted parsing for Z
       });
+
+      return result;
     }, "Payment process with VA initiated"),
   },
 };
